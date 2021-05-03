@@ -1,3 +1,4 @@
 {
-    "mongoURI": "mongodb+srv://jedrek123:jedrek123@cluster0.idenk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    "mongoURI": "mongodb+srv://jedrek123:jedrek123@cluster0.idenk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "jwtSecret": "mysecrettoken"
 }
