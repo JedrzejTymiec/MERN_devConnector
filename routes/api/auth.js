@@ -13,13 +13,13 @@ const User = require("../../models/User");
 // access: Public
 
 router.get("/", auth, async (req, res) => {
-	try {
-		const user = await User.findById(req.user.id).select("-password");
-		res.json(user);
-	} catch (err) {
-		console.log(err.message);
-		res.status(500).send("Server Error");
-	}
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Server Error");
+  }
 });
 
 // route:  POST api/auth
@@ -27,59 +27,60 @@ router.get("/", auth, async (req, res) => {
 // access: Public
 
 router.post(
-	"/",
-	[
-		//data validation
-		check("email", "Please enter valid email").isEmail(),
-		check("password", "Please is required").exists(),
-	],
-	async (req, res) => {
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			return res.status(400).json({ errors: errors.array() });
-		}
+  "/",
+  [
+    //data validation
+    check("email", "Please enter valid email").isEmail(),
+    check("password", "Please is required").exists(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-		const { email, password } = req.body;
+    const { password } = req.body;
+    const email = req.body.email.toLowerCase();
 
-		try {
-			let user = await User.findOne({ email });
+    try {
+      let user = await User.findOne({ email });
 
-			//check if already registred
-			if (!user) {
-				return res
-					.status(400)
-					.json({ errors: [{ msg: "Invalid email or password" }] });
-			}
+      //check if already registred
+      if (!user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Invalid email or password" }] });
+      }
 
-			const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(password, user.password);
 
-			if (!isMatch) {
-				return res
-					.status(400)
-					.json({ errors: [{ msg: "Invalid email or password" }] });
-			}
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Invalid email or password" }] });
+      }
 
-			//send jwt token back
-			const payload = {
-				user: {
-					id: user.id,
-				},
-			};
+      //send jwt token back
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
 
-			jwt.sign(
-				payload,
-				config.get("jwtSecret"),
-				{ expiresIn: 360000 },
-				(err, token) => {
-					if (err) throw err;
-					res.json({ token });
-				}
-			);
-		} catch (err) {
-			console.log(err.message);
-			res.status(500).send("Server error");
-		}
-	}
+      jwt.sign(
+        payload,
+        config.get("jwtSecret"),
+        { expiresIn: 360000 },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
+    } catch (err) {
+      console.log(err.message);
+      res.status(500).send("Server error");
+    }
+  }
 );
 
 module.exports = router;

@@ -13,78 +13,79 @@ const User = require("../../models/User");
 // access: Public
 
 router.post(
-	"/",
-	[
-		//data validation
-		check("name", "Name is required").not().isEmpty(),
-		check("email", "Please enter valid email").isEmail(),
-		check(
-			"password",
-			"Please enter password with 6 or more characters"
-		).isLength({ min: 6 }),
-	],
-	async (req, res) => {
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			return res.status(400).json({ errors: errors.array() });
-		}
+  "/",
+  [
+    //data validation
+    check("name", "Name is required").not().isEmpty(),
+    check("email", "Please enter valid email").isEmail(),
+    check(
+      "password",
+      "Please enter password with 6 or more characters"
+    ).isLength({ min: 6 }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-		const { name, email, password } = req.body;
+    const { name, password } = req.body;
+    const email = req.body.email.toLowerCase();
 
-		try {
-			let user = await User.findOne({ email });
+    try {
+      let user = await User.findOne({ email });
 
-			//check if already registred
-			if (user) {
-				return res
-					.status(400)
-					.json({ errors: [{ msg: "Email already registred" }] });
-			}
+      //check if already registred
+      if (user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Email already registred" }] });
+      }
 
-			//get gravatar pic
-			const avatar = gravatar.url(email, {
-				s: "200", //size
-				r: "pg", //rating
-				d: "mm", //default
-			});
+      //get gravatar pic
+      const avatar = gravatar.url(email, {
+        s: "200", //size
+        r: "pg", //rating
+        d: "mm", //default
+      });
 
-			//create new user instance
-			user = new User({
-				name,
-				email,
-				avatar,
-				password,
-			});
+      //create new user instance
+      user = new User({
+        name,
+        email,
+        avatar,
+        password,
+      });
 
-			//hash password
-			const salt = await bcrypt.genSalt(10);
+      //hash password
+      const salt = await bcrypt.genSalt(10);
 
-			user.password = await bcrypt.hash(password, salt);
+      user.password = await bcrypt.hash(password, salt);
 
-			//save user to db
-			await user.save();
+      //save user to db
+      await user.save();
 
-			//send jwt token back
-			const payload = {
-				user: {
-					id: user.id,
-				},
-			};
+      //send jwt token back
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
 
-			jwt.sign(
-				payload,
-				config.get("jwtSecret"),
-				{ expiresIn: 360000 },
-				(err, token) => {
-					if (err) throw err;
-					res.json({ token });
-				}
-			);
-		} catch (err) {
-			console.log(err.message);
-			res.status(500).send("Server error");
-		}
-	}
+      jwt.sign(
+        payload,
+        config.get("jwtSecret"),
+        { expiresIn: 360000 },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
+    } catch (err) {
+      console.log(err.message);
+      res.status(500).send("Server error");
+    }
+  }
 );
 
 module.exports = router;
