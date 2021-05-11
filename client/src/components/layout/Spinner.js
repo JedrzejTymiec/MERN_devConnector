@@ -1,7 +1,7 @@
 import spinner from "../../img/spinner.gif";
 import { Fragment } from "react";
 
-export default () => (
+const Spinner = () => (
   <Fragment>
     <img
       src={spinner}
@@ -10,3 +10,5 @@ export default () => (
     />
   </Fragment>
 );
+
+export default Spinner;

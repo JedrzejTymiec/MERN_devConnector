@@ -80,7 +80,6 @@ const AddExperience = ({ addExperience, history }) => {
             <input
               type="checkbox"
               name="current"
-              value=""
               value={current}
               checked={current}
               onChange={(e) => {
