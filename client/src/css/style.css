@@ -517,6 +517,20 @@ img {
   align-items: center;
 }
 
+.post .post-date {
+  color: #aaa;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.post .comment-count {
+  background: #f4f4f4;
+  color: #17a2b8;
+  padding: 0.1rem 0.2rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+}
+
 .post > div:first-child {
   text-align: center;
 }
