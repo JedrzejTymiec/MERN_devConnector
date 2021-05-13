@@ -227,7 +227,8 @@ router.delete("/comment/:post_id/:comment_id", auth, async (req, res) => {
 
     post.comments.splice(removeIndex, 1);
     await post.save();
-    res.json(post.comments);
+    // res.json(post.comments); send current comments list back
+    res.json({ msg: "Comment removed" }); //send just msg
   } catch (err) {
     console.log(err.message);
     res.status(500).send("Server Error");
