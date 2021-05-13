@@ -1,0 +1,6 @@
+{
+    "mongoURI": "mongodb+srv://jedrek123:jedrek123@cluster0.idenk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "jwtSecret": "mysecrettoken",
+    "githubClientId": "863b0bd7edf1d6fbe91e",
+    "githubSecret": " fb8989efa7cdf8829040b024ea47d92efb036cce"
+}
