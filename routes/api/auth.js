@@ -9,7 +9,7 @@ const { check, validationResult } = require("express-validator");
 const User = require("../../models/User");
 
 // route:  GET api/auth
-// desc:   Test route
+// desc:   Return currently loged user
 // access: Public
 
 router.get("/", auth, async (req, res) => {
@@ -31,7 +31,7 @@ router.post(
   [
     //data validation
     check("email", "Please enter valid email").isEmail(),
-    check("password", "Please is required").exists(),
+    check("password", "Passowrd is required").exists(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
